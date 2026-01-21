@@ -22,7 +22,7 @@ Sync your Slack status with the currently playing track in Music.app.
 ### Option A: Quick start (local clone)
 
 ```bash
-git clone https://github.com/vine/nowplayin.git
+git clone https://github.com/mbradley/nowplayin.git
 cd nowplayin
 export SLACK_TOKEN="xoxp-your-token"
 ./run.sh
@@ -31,22 +31,28 @@ export SLACK_TOKEN="xoxp-your-token"
 ### Option B: Install as CLI tool
 
 ```bash
-pipx install git+https://github.com/vine/nowplayin.git
-export SLACK_TOKEN="xoxp-your-token"
+pipx install git+https://github.com/mbradley/nowplayin.git
+nowplayin --token xoxp-your-token
 nowplayin
-```
-
-Or with pip:
-
-```bash
-pip install git+https://github.com/vine/nowplayin.git
 ```
 
 ## Usage
 
 ```bash
-# Basic usage
+# Save your token (one-time)
+nowplayin --token xoxp-your-token
+
+# Run in foreground
 nowplayin
+
+# Run as background daemon
+nowplayin --daemon
+
+# Check if running
+nowplayin --status
+
+# Stop the daemon
+nowplayin --stop
 
 # Poll every 30 seconds instead of 10
 nowplayin --interval 30
@@ -57,17 +63,16 @@ nowplayin --keep-on-pause
 
 ## Token Setup
 
-Either set an environment variable:
+Save it once (stored in `~/.config/nowplayin/token`):
+
+```bash
+nowplayin --token xoxp-your-token
+```
+
+Or set an environment variable:
 
 ```bash
 export SLACK_TOKEN="xoxp-your-token"
-```
-
-Or create a `.env` file in the project directory:
-
-```bash
-cp .env.example .env
-# Edit .env and add your token
 ```
 
 ## Behavior

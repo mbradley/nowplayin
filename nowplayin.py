@@ -18,13 +18,26 @@ import requests
 STATUS_EMOJI = ":musical_note:"
 
 
+CONFIG_DIR = os.path.expanduser("~/.config/nowplayin")
+PID_FILE = os.path.join(CONFIG_DIR, "pid")
+
+
 def get_slack_token():
-    """Get Slack token from environment or .env file."""
+    """Get Slack token from config file, environment, or .env file."""
+    # 1. Check ~/.config/nowplayin/token
+    token_path = os.path.join(CONFIG_DIR, "token")
+    if os.path.exists(token_path):
+        with open(token_path) as f:
+            token = f.read().strip()
+            if token:
+                return token
+
+    # 2. Check environment variable
     token = os.environ.get("SLACK_TOKEN")
     if token:
         return token
 
-    # Try loading from .env file
+    # 3. Try loading from .env file in script directory
     env_path = os.path.join(os.path.dirname(__file__), ".env")
     if os.path.exists(env_path):
         with open(env_path) as f:
@@ -34,6 +47,80 @@ def get_slack_token():
                     return line.split("=", 1)[1].strip().strip('"').strip("'")
 
     return None
+
+
+def save_token(token):
+    """Save token to config file."""
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    token_path = os.path.join(CONFIG_DIR, "token")
+    with open(token_path, "w") as f:
+        f.write(token)
+    os.chmod(token_path, 0o600)
+    print(f"Token saved to {token_path}")
+
+
+def daemonize():
+    """Fork into background."""
+    if os.fork() > 0:
+        sys.exit(0)
+    os.setsid()
+    if os.fork() > 0:
+        sys.exit(0)
+    sys.stdout.flush()
+    sys.stderr.flush()
+    with open("/dev/null", "r") as devnull:
+        os.dup2(devnull.fileno(), sys.stdin.fileno())
+    with open("/dev/null", "w") as devnull:
+        os.dup2(devnull.fileno(), sys.stdout.fileno())
+        os.dup2(devnull.fileno(), sys.stderr.fileno())
+
+
+def write_pid():
+    """Write PID file."""
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    with open(PID_FILE, "w") as f:
+        f.write(str(os.getpid()))
+
+
+def read_pid():
+    """Read PID from file, return None if not exists or invalid."""
+    if not os.path.exists(PID_FILE):
+        return None
+    try:
+        with open(PID_FILE) as f:
+            return int(f.read().strip())
+    except (ValueError, IOError):
+        return None
+
+
+def is_running():
+    """Check if daemon is already running."""
+    pid = read_pid()
+    if pid is None:
+        return False
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def stop_daemon():
+    """Stop the running daemon."""
+    pid = read_pid()
+    if pid is None:
+        print("Not running.")
+        return False
+    try:
+        os.kill(pid, signal.SIGTERM)
+        print(f"Stopped (pid {pid})")
+        os.remove(PID_FILE)
+        return True
+    except OSError:
+        print("Not running.")
+        if os.path.exists(PID_FILE):
+            os.remove(PID_FILE)
+        return False
 
 
 def is_music_app_running():
@@ -176,13 +263,63 @@ def main():
         action="store_true",
         help="Keep showing track when paused (default: clear on pause)"
     )
+    parser.add_argument(
+        "--daemon", "-d",
+        action="store_true",
+        help="Run in background"
+    )
+    parser.add_argument(
+        "--stop",
+        action="store_true",
+        help="Stop the background daemon"
+    )
+    parser.add_argument(
+        "--token",
+        type=str,
+        help="Save Slack token to ~/.config/nowplayin/token"
+    )
+    parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Check if daemon is running"
+    )
     args = parser.parse_args()
+
+    # Handle --token
+    if args.token:
+        save_token(args.token)
+        return
+
+    # Handle --status
+    if args.status:
+        if is_running():
+            print(f"Running (pid {read_pid()})")
+        else:
+            print("Not running.")
+        return
+
+    # Handle --stop
+    if args.stop:
+        stop_daemon()
+        return
+
+    # Check for already running daemon
+    if args.daemon and is_running():
+        print(f"Already running (pid {read_pid()})")
+        sys.exit(1)
 
     token = get_slack_token()
     if not token:
         print("Error: SLACK_TOKEN not found.", file=sys.stderr)
-        print("Set it as an environment variable or in a .env file.", file=sys.stderr)
+        print("Run: nowplayin --token xoxp-...", file=sys.stderr)
+        print("Or set SLACK_TOKEN environment variable.", file=sys.stderr)
         sys.exit(1)
+
+    # Daemonize if requested
+    if args.daemon:
+        print(f"Starting daemon...")
+        daemonize()
+        write_pid()
 
     # Track state
     last_status_text = None
