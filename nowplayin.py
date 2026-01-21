@@ -14,9 +14,8 @@ import time
 
 import requests
 
-# Status emoji and format
+# Status emoji
 STATUS_EMOJI = ":musical_note:"
-STATUS_PREFIX = "🎵 "
 
 
 def get_slack_token():
@@ -103,7 +102,7 @@ def format_status_text(track_info):
     """Format track info as status text."""
     if not track_info or not track_info.get("name"):
         return ""
-    return f"{STATUS_PREFIX}{track_info['name']} - {track_info['artist']}"
+    return f"{track_info['name']} - {track_info['artist']}"
 
 
 def get_slack_status(token):
@@ -157,9 +156,9 @@ def clear_slack_status(token):
     return set_slack_status(token, "", "")
 
 
-def is_our_status(status_text):
+def is_our_status(status_emoji):
     """Check if the current status was set by us."""
-    return status_text.startswith(STATUS_PREFIX)
+    return status_emoji == STATUS_EMOJI
 
 
 def main():
@@ -234,9 +233,10 @@ def main():
         current = get_slack_status(token)
         if current:
             current_text = current.get("status_text", "")
+            current_emoji = current.get("status_emoji", "")
             # If we previously set a status and it's now different (and not empty)
-            # and it doesn't match our format, user changed it
-            if last_status_text and current_text and not is_our_status(current_text):
+            # and it doesn't match our emoji, user changed it
+            if last_status_text and current_text and not is_our_status(current_emoji):
                 print(f"Status changed externally to: {current_text}")
                 print("Exiting without clearing status.")
                 should_clear_on_exit = False
