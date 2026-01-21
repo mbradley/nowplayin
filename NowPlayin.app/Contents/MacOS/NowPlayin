@@ -1,0 +1,53 @@
+#!/bin/bash
+
+CONFIG_DIR="$HOME/.config/nowplayin"
+TOKEN_FILE="$CONFIG_DIR/token"
+PID_FILE="$CONFIG_DIR/pid"
+
+# Find nowplayin command
+if command -v nowplayin &> /dev/null; then
+    NOWPLAYIN="nowplayin"
+elif [ -f "$HOME/.local/bin/nowplayin" ]; then
+    NOWPLAYIN="$HOME/.local/bin/nowplayin"
+else
+    osascript -e 'display alert "nowplayin not found" message "Please install nowplayin first:\n\npipx install git+https://github.com/mbradley/nowplayin.git" as critical'
+    exit 1
+fi
+
+# Check if already running
+if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    if kill -0 "$PID" 2>/dev/null; then
+        osascript -e "display notification \"Already running (pid $PID)\" with title \"NowPlayin\""
+        exit 0
+    fi
+fi
+
+# Prompt for token if not set
+if [ ! -f "$TOKEN_FILE" ]; then
+    TOKEN=$(osascript -e 'display dialog "Enter your Slack token (starts with xoxp-):" default answer "" with title "NowPlayin Setup" with icon note' -e 'text returned of result' 2>/dev/null)
+
+    if [ -z "$TOKEN" ]; then
+        exit 0  # User cancelled
+    fi
+
+    if [[ ! "$TOKEN" =~ ^xoxp- ]]; then
+        osascript -e 'display alert "Invalid token" message "Token should start with xoxp-" as critical'
+        exit 1
+    fi
+
+    mkdir -p "$CONFIG_DIR"
+    echo "$TOKEN" > "$TOKEN_FILE"
+    chmod 600 "$TOKEN_FILE"
+fi
+
+# Start the daemon
+$NOWPLAYIN --daemon
+
+# Show notification
+sleep 1
+if [ -f "$PID_FILE" ]; then
+    osascript -e 'display notification "Syncing Music.app to Slack status" with title "NowPlayin" sound name "default"'
+else
+    osascript -e 'display alert "Failed to start" message "Check that Music.app is running" as critical'
+fi
