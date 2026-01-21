@@ -1,6 +1,6 @@
 # nowplayin
 
-Sync your Slack status with the currently playing track in Music.app.
+Sync your Slack status with the currently playing track in Music.app (macOS only).
 
 ## Slack App Setup (one-time)
 
@@ -24,7 +24,7 @@ Sync your Slack status with the currently playing track in Music.app.
 ```bash
 git clone https://github.com/mbradley/nowplayin.git
 cd nowplayin
-export SLACK_TOKEN="xoxp-your-token"
+./run.sh --token xoxp-your-token
 ./run.sh
 ```
 
