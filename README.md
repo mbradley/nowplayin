@@ -12,28 +12,49 @@ Sync your Slack status with the currently playing track in Music.app (macOS only
 
 ## Install
 
-### Option A: Quick start (local clone)
+### Option A: Standalone App (easiest)
+
+1. Download `NowPlayin.app` from [Releases](https://github.com/mbradley/nowplayin/releases)
+2. Move to Applications folder
+3. Double-click to run
+4. On first launch, paste your token when prompted
+
+No other dependencies required.
+
+### Option B: CLI + App (for terminal users)
+
+```bash
+# Install the CLI
+pipx install git+https://github.com/mbradley/nowplayin.git
+
+# Clone repo for the app wrapper
+git clone https://github.com/mbradley/nowplayin.git
+```
+
+Then either:
+- Double-click `NowPlayin.app` from the cloned repo, or
+- Run `nowplayin --daemon` from terminal
+
+### Option C: Build Standalone App Yourself
 
 ```bash
 git clone https://github.com/mbradley/nowplayin.git
 cd nowplayin
-./run.sh --token xoxp-your-token
-./run.sh
-```
-
-### Option B: Install as CLI tool
-
-```bash
-pipx install git+https://github.com/mbradley/nowplayin.git
-nowplayin --token xoxp-your-token
-nowplayin
+python3 -m venv venv
+source venv/bin/activate
+pip install requests pyinstaller
+pyinstaller --name "NowPlayin" --windowed --onedir --noconfirm \
+  --add-data "nowplayin.py:." --hidden-import requests launcher.py
+# App is in dist/NowPlayin.app
 ```
 
 ## Usage
 
 ### Mac App
 
-After installing via pipx, double-click `NowPlayin.app` (in this repo or download it). On first launch it prompts for your token, then runs in the background.
+Double-click `NowPlayin.app`. On first launch it prompts for your token, saves it, and starts syncing. Shows a notification when running.
+
+To stop: `nowplayin --stop` (CLI) or Activity Monitor → quit "NowPlayin"
 
 ### CLI
 
@@ -53,25 +74,9 @@ nowplayin --status
 # Stop the daemon
 nowplayin --stop
 
-# Poll every 30 seconds instead of 10
-nowplayin --interval 30
-
-# Keep status visible when paused (default: clears on pause)
-nowplayin --keep-on-pause
-```
-
-## Token Setup
-
-Save it once (stored in `~/.config/nowplayin/token`):
-
-```bash
-nowplayin --token xoxp-your-token
-```
-
-Or set an environment variable:
-
-```bash
-export SLACK_TOKEN="xoxp-your-token"
+# Options
+nowplayin --interval 30      # Poll every 30s instead of 10
+nowplayin --keep-on-pause    # Keep status when paused
 ```
 
 ## Behavior
