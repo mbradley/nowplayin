@@ -1,6 +1,6 @@
 [project]
 name = "nowplayin"
-version = "0.1.0"
+version = "0.1.1"
 description = "Sync your Slack status with the currently playing track in Music.app"
 readme = "README.md"
 license = "MIT"
