@@ -1,0 +1,14 @@
+[project]
+name = "nowplayin"
+version = "0.1.0"
+description = "Sync your Slack status with the currently playing track in Music.app"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["requests"]
+
+[project.scripts]
+nowplayin = "nowplayin:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
