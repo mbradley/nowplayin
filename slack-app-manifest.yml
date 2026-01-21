@@ -6,6 +6,7 @@ display_information:
 oauth_config:
   scopes:
     user:
+      - users.profile:read
       - users.profile:write
 
 settings:

@@ -323,6 +323,7 @@ def main():
 
     # Track state
     last_status_text = None
+    has_set_status = False  # True once we've set at least one status
     should_clear_on_exit = True
 
     def handle_exit(signum=None, frame=None):
@@ -366,14 +367,13 @@ def main():
         else:
             new_status = ""
 
-        # Check if user manually changed status
+        # Check if user manually changed status (only after we've set at least one)
         current = get_slack_status(token)
-        if current:
+        if current and has_set_status:
             current_text = current.get("status_text", "")
             current_emoji = current.get("status_emoji", "")
-            # If we previously set a status and it's now different (and not empty)
-            # and it doesn't match our emoji, user changed it
-            if last_status_text and current_text and not is_our_status(current_emoji):
+            # If there's a status with a different emoji, user set it manually
+            if current_text and not is_our_status(current_emoji):
                 print(f"Status changed externally to: {current_text}")
                 print("Exiting without clearing status.")
                 should_clear_on_exit = False
@@ -384,6 +384,7 @@ def main():
             if new_status:
                 print(f"♫ {track['name']} - {track['artist']}")
                 set_slack_status(token, new_status)
+                has_set_status = True
             else:
                 if last_status_text:
                     print("Playback stopped/paused. Clearing status.")
