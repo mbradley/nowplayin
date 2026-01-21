@@ -4,18 +4,11 @@ Sync your Slack status with the currently playing track in Music.app (macOS only
 
 ## Slack App Setup (one-time)
 
-1. Create a Slack App at https://api.slack.com/apps
-   - Click "Create New App" → "From scratch"
-   - Name it "Now Playing" and select your workspace
-
-2. Add the OAuth scope:
-   - Go to "OAuth & Permissions" in the sidebar
-   - Under "User Token Scopes", add `users.profile:write`
-
-3. Install to your workspace:
-   - Click "Install to Workspace" and authorize
-
-4. Copy the **User OAuth Token** (starts with `xoxp-`)
+1. Go to https://api.slack.com/apps → **Create New App** → **From an app manifest**
+2. Select your workspace
+3. Paste the contents of [`slack-app-manifest.yml`](slack-app-manifest.yml) from this repo
+4. Click **Create** → **Install to Workspace** → **Allow**
+5. Copy the **User OAuth Token** (starts with `xoxp-`)
 
 ## Install
 
@@ -37,6 +30,12 @@ nowplayin
 ```
 
 ## Usage
+
+### Mac App
+
+After installing via pipx, double-click `NowPlayin.app` (in this repo or download it). On first launch it prompts for your token, then runs in the background.
+
+### CLI
 
 ```bash
 # Save your token (one-time)

@@ -1,0 +1,14 @@
+display_information:
+  name: NowPlayin
+  description: Sync your Slack status with the currently playing track in Music.app
+  background_color: "#1DB954"
+
+oauth_config:
+  scopes:
+    user:
+      - users.profile:write
+
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
