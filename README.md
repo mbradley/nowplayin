@@ -16,17 +16,10 @@ Sync your Slack status with the currently playing track in Music.app (macOS only
 
 1. Download `NowPlayin.app` from [Releases](https://github.com/mbradley/nowplayin/releases)
 2. Unzip and move to Applications folder
-3. **First launch:** Open the app, then go to System Settings → Privacy & Security → **Open Anyway**
+3. Double-click to run
 4. Paste your token when prompted
 
-> **Note:** macOS will warn the app can't be verified. This is normal for unsigned apps. To open it:
-> 1. Double-click the app → get the warning → click **Done** (not "Move to Trash")
-> 2. Open **System Settings → Privacy & Security**
-> 3. Scroll down to the **Security** section
-> 4. Find *"NowPlayin.app" was blocked* → click **Open Anyway**
-> 5. Confirm when prompted
-
-No other dependencies required.
+The app is signed and notarized by Apple — no Gatekeeper warnings.
 
 ### Option B: CLI + App (for terminal users)
 
