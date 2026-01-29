@@ -4,18 +4,12 @@ Sync your Slack status with the currently playing track in Music.app.
 
 **macOS 14+ (Sonoma) required** for the native app. For older macOS versions, use the [Python CLI](#python-cli-alternative).
 
-## Slack App Setup (one-time)
+## Get Your Slack Token
 
-1. Go to https://api.slack.com/apps and click **Create New App**
-2. Select **From an app manifest**
-3. Choose your workspace from the dropdown, then click **Next**
-4. Switch the format toggle from **JSON** to **YAML**
-5. Delete the placeholder content and paste the contents of [`slack-app-manifest.yml`](slack-app-manifest.yml) from this repo
-6. Click **Next**, review the summary, then click **Create**
-7. On the app page, click **Install to Workspace**
-8. Review the permissions and click **Allow**
-9. In the left sidebar, click **OAuth & Permissions**
-10. Under "OAuth Tokens for Your Workspace", copy the **User OAuth Token** (starts with `xoxp-`)
+1. Visit https://slack.nowplayin.workers.dev
+2. Click **Add to Slack**
+3. Authorize for your workspace
+4. Copy the token displayed (starts with `xoxp-`)
 
 ## Install
 
@@ -23,7 +17,7 @@ Sync your Slack status with the currently playing track in Music.app.
    - **DMG** (recommended): Open and drag to Applications
    - **ZIP**: Unzip and drag `NowPlayin.app` to Applications
 2. Launch NowPlayin — it appears in your menu bar (no dock icon)
-3. Click the menu bar icon → **Preferences** → paste your token → **Save Token**
+3. Click the menu bar icon → **Preferences** → paste your token from above → **Save Token**
 4. Click **Start Syncing**
 
 The app is signed and notarized — no Gatekeeper warnings.
@@ -75,7 +69,7 @@ For older macOS versions or terminal-based usage:
 # Install
 pipx install git+https://github.com/mbradley/nowplayin.git
 
-# Save token
+# Save token (get yours at https://slack.nowplayin.workers.dev)
 nowplayin --token xoxp-your-token
 
 # Run
