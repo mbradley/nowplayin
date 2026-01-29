@@ -17,6 +17,24 @@ All data is stored locally on your Mac:
 
 No data is stored on external servers controlled by the developer.
 
+## Slack Permissions
+
+When you authorize NowPlayin, Slack shows these permissions:
+
+| Slack says | What we actually do |
+|------------|---------------------|
+| "View profile details about people in your workspace" | **We don't.** This permission comes from the `users.profile:read` scope, but we only read *your own* status to detect manual changes. We never access other users' profiles. |
+| "View information about your identity" | We use this only to verify your token works. |
+| "Edit your profile information and status" | **Yes, this is something we do.** We update your status with the currently playing track. We don't modify any other profile information. |
+
+### Why these permissions?
+
+Slack's `users.profile:read` and `users.profile:write` scopes are broad by design. We request the minimum scopes needed to:
+1. Read your current status (to avoid overwriting manual changes)
+2. Write your status (to show what's playing)
+
+We cannot request narrower permissions — Slack doesn't offer status-only scopes.
+
 ## Network Communication
 
 The app communicates only with:

@@ -8,7 +8,7 @@ Sync your Slack status with the currently playing track in Music.app.
 
 1. Visit https://slack.nowplayin.workers.dev
 2. Click **Add to Slack**
-3. Authorize for your workspace
+3. Authorize for your workspace (see [Slack Permissions](PRIVACY.md#slack-permissions) for what we do and don't access)
 4. Copy the token displayed (starts with `xoxp-`)
 
 ## Install
