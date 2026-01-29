@@ -6,19 +6,25 @@ Sync your Slack status with the currently playing track in Music.app.
 
 ## Slack App Setup (one-time)
 
-1. Go to https://api.slack.com/apps → **Create New App** → **From an app manifest**
-2. Select your workspace
-3. Paste the contents of [`slack-app-manifest.yml`](slack-app-manifest.yml) from this repo
-4. Click **Create** → **Install to Workspace** → **Allow**
-5. Copy the **User OAuth Token** (starts with `xoxp-`)
+1. Go to https://api.slack.com/apps and click **Create New App**
+2. Select **From an app manifest**
+3. Choose your workspace from the dropdown, then click **Next**
+4. Switch the format toggle from **JSON** to **YAML**
+5. Delete the placeholder content and paste the contents of [`slack-app-manifest.yml`](slack-app-manifest.yml) from this repo
+6. Click **Next**, review the summary, then click **Create**
+7. On the app page, click **Install to Workspace**
+8. Review the permissions and click **Allow**
+9. In the left sidebar, click **OAuth & Permissions**
+10. Under "OAuth Tokens for Your Workspace", copy the **User OAuth Token** (starts with `xoxp-`)
 
 ## Install
 
-1. Download `NowPlayin-1.0.0.zip` from [Releases](https://github.com/mbradley/nowplayin/releases)
-2. Unzip and drag `NowPlayin.app` to Applications
-3. Launch NowPlayin — it appears in your menu bar (no dock icon)
-4. Click the menu bar icon → **Preferences** → paste your token → **Save Token**
-5. Click **Start Syncing**
+1. Download from [Releases](https://github.com/mbradley/nowplayin/releases):
+   - **DMG** (recommended): Open and drag to Applications
+   - **ZIP**: Unzip and drag `NowPlayin.app` to Applications
+2. Launch NowPlayin — it appears in your menu bar (no dock icon)
+3. Click the menu bar icon → **Preferences** → paste your token → **Save Token**
+4. Click **Start Syncing**
 
 The app is signed and notarized — no Gatekeeper warnings.
 
