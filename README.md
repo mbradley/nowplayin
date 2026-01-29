@@ -11,18 +11,21 @@ Sync your Slack status with the currently playing track in Music.app.
 3. Authorize for your workspace (see [Slack Permissions](PRIVACY.md#slack-permissions) for what we do and don't access)
 4. Copy the token displayed (starts with `xoxp-`)
 
+**Multiple workspaces?** Repeat these steps for each Slack workspace you want to sync.
+
 ## Install
 
 1. Download from [Releases](https://github.com/mbradley/nowplayin/releases):
    - **DMG** (recommended): Open and drag to Applications
    - **ZIP**: Unzip and drag `NowPlayin.app` to Applications
 2. Launch NowPlayin — it appears in your menu bar (no dock icon)
-3. Click the menu bar icon → **Preferences** → paste your token from above → **Save Token**
-4. Click **Start Syncing**
+3. Click the menu bar icon → **Preferences** → **Workspaces** → **Add Workspace**
+4. Paste your token and click **Add**
+5. Click **Start Syncing**
 
 The app is signed and notarized — no Gatekeeper warnings.
 
-**Keychain access:** The app requests keychain access to securely store your Slack token. Your token never leaves your Mac except to communicate with Slack. See [PRIVACY.md](PRIVACY.md) for details.
+**Keychain access:** The app requests keychain access to securely store your Slack tokens. Tokens never leave your Mac except to communicate with Slack. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Usage
 
@@ -32,15 +35,15 @@ Click the menu bar icon to:
 
 ### Preferences
 
+- **Workspaces** — add, remove, and manage your Slack workspaces
 - **Polling Interval** — how often to check Music.app (5-60 seconds)
 - **Keep status when paused** — don't clear status when music is paused
 - **Launch at Login** — start automatically when you log in
 
 ## Behavior
 
-- Updates Slack status to "🎵 Song - Artist" when music is playing
+- Updates Slack status to "🎵 Song - Artist" across all configured workspaces
 - Clears status when playback stops or pauses (unless "keep when paused" is enabled)
-- Stops syncing if you manually change your Slack status (doesn't overwrite it)
 - Clears status when you quit the app
 
 ## Building from Source
