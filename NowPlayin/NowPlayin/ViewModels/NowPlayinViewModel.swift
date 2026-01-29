@@ -19,6 +19,16 @@ final class NowPlayinViewModel {
         set { UserDefaults.standard.set(newValue, forKey: "keepOnPause") }
     }
 
+    var showOnboardingOnLaunch: Bool {
+        get { UserDefaults.standard.object(forKey: "showOnboardingOnLaunch") as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: "showOnboardingOnLaunch") }
+    }
+
+    var hasCompletedOnboarding: Bool {
+        get { UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") }
+        set { UserDefaults.standard.set(newValue, forKey: "hasCompletedOnboarding") }
+    }
+
     private var pollingTask: Task<Void, Never>?
     private var lastStatusText: String?
     private var hasSetStatus = false

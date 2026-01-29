@@ -94,3 +94,7 @@ struct PreferencesView: View {
         viewModel.refreshTokenStatus()
     }
 }
+
+#Preview {
+    PreferencesView(viewModel: NowPlayinViewModel())
+}

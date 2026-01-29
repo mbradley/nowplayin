@@ -75,3 +75,16 @@ struct MenuBarView: View {
         }
     }
 }
+
+#Preview("Syncing") {
+    MenuBarView(viewModel: {
+        let vm = NowPlayinViewModel()
+        vm.isSyncing = true
+        vm.currentTrack = Track(name: "Bohemian Rhapsody", artist: "Queen", state: .playing)
+        return vm
+    }(), openPreferences: {})
+}
+
+#Preview("Idle") {
+    MenuBarView(viewModel: NowPlayinViewModel(), openPreferences: {})
+}
