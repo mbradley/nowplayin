@@ -22,6 +22,8 @@ Sync your Slack status with the currently playing track in Music.app.
 
 The app is signed and notarized — no Gatekeeper warnings.
 
+**Keychain access:** The app requests keychain access to securely store your Slack token. Your token never leaves your Mac except to communicate with Slack. See [PRIVACY.md](PRIVACY.md) for details.
+
 ## Usage
 
 Click the menu bar icon to:
