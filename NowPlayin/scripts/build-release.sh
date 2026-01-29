@@ -108,9 +108,39 @@ VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$APP_PA
 FINAL_ZIP="$BUILD_DIR/$APP_NAME-$VERSION.zip"
 mv "$BUILD_DIR/export/$APP_NAME.zip" "$FINAL_ZIP"
 
+# Create DMG
+FINAL_DMG="$BUILD_DIR/$APP_NAME-$VERSION.dmg"
+info "Creating DMG..."
+rm -f "$FINAL_DMG"
+
+if command -v create-dmg &> /dev/null; then
+    create-dmg \
+        --volname "$APP_NAME" \
+        --window-pos 200 120 \
+        --window-size 600 400 \
+        --icon-size 100 \
+        --icon "$APP_NAME.app" 150 190 \
+        --hide-extension "$APP_NAME.app" \
+        --app-drop-link 450 190 \
+        "$FINAL_DMG" \
+        "$APP_PATH" \
+        2>/dev/null || true
+
+    if [[ -f "$FINAL_DMG" ]]; then
+        info "DMG created: $FINAL_DMG"
+    else
+        warn "DMG creation failed - falling back to hdiutil"
+        hdiutil create -volname "$APP_NAME" -srcfolder "$APP_PATH" -ov -format UDZO "$FINAL_DMG"
+    fi
+else
+    warn "create-dmg not found - using basic hdiutil"
+    hdiutil create -volname "$APP_NAME" -srcfolder "$APP_PATH" -ov -format UDZO "$FINAL_DMG"
+fi
+
 info "Build complete!"
 echo ""
 echo "  App:  $APP_PATH"
+echo "  DMG:  $FINAL_DMG"
 echo "  Zip:  $FINAL_ZIP"
 echo ""
 
