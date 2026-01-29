@@ -5,6 +5,12 @@ struct SlackStatus {
     let emoji: String
 }
 
+struct WorkspaceInfo {
+    let teamId: String
+    let teamName: String
+    let userId: String
+}
+
 enum SlackError: Error, LocalizedError {
     case apiError(String)
     case networkError(Error)
@@ -88,5 +94,32 @@ enum SlackService {
 
     static func isOurStatus(_ emoji: String) -> Bool {
         emoji == statusEmoji
+    }
+
+    static func getWorkspaceInfo(token: String) async throws -> WorkspaceInfo {
+        let url = URL(string: "\(baseURL)/auth.test")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.timeoutInterval = 10
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw SlackError.apiError("Invalid response")
+        }
+
+        guard let ok = json["ok"] as? Bool, ok else {
+            let error = json["error"] as? String ?? "unknown error"
+            throw SlackError.apiError(error)
+        }
+
+        guard let teamId = json["team_id"] as? String,
+              let teamName = json["team"] as? String,
+              let userId = json["user_id"] as? String else {
+            throw SlackError.apiError("Missing required fields")
+        }
+
+        return WorkspaceInfo(teamId: teamId, teamName: teamName, userId: userId)
     }
 }
