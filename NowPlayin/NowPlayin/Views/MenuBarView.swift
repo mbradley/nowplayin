@@ -50,7 +50,7 @@ struct MenuBarView: View {
                     systemImage: viewModel.isSyncing ? "stop.fill" : "play.fill"
                 )
             }
-            .disabled(!viewModel.hasToken && !viewModel.isSyncing)
+            .disabled(!viewModel.hasWorkspaces && !viewModel.isSyncing)
 
             Divider()
 
